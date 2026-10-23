@@ -1,5 +1,4 @@
-
-
+/*James Arseneau, Micheal Mylett */ 
 void printString(char*);
 void readString(char*);
 void readSector(char*, int);
@@ -8,7 +7,7 @@ int interrupt(int, int, int, int, int);
 
 
 int main(){
-while(1){
+
 /*
 char line[80];
  char buffer[512];
@@ -32,20 +31,18 @@ makeInterrupt21();
 interrupt(0x21,0,0,0,0);
 */
 
-/*Step 5 Test*/ 
+/*Step 5 Test */
 char line[80];
 makeInterrupt21();
-printString("Enter a line: ");
+/*interrupt(0x21,0,(int)"System calls are Working",0,0);*/
 interrupt(0x21,1,line,0,0);
 interrupt(0x21,0,line,0,0);
+interrupt(0x21,2,line,30,0);
+interrupt(0x21,0,line,0,0);
+while(1);
+  
 
-/*
-char buffer[512];
-readSector(buffer,30);
-printString(buffer);
-*/
 
-    } 
 }
 
 /*Step 1*/ 
@@ -73,7 +70,7 @@ void readString(char* array){
             /*prints characters to the screen*/
             interrupt(0x10, 0xe*256+0xd, 0, 0, 0);
             interrupt(0x10, 0xe*256+0xa, 0, 0, 0);
-            break;
+           break;
 
         }else if(c== 0x8){/* if backspace key is pressed*/
             if(i >0){
@@ -101,26 +98,22 @@ void readSector(char* buffer, int sector){
 
 }
 
-/*step4*/
-
-
-
-
+/*step4 and 5 */
 void handleInterrupt21(int ax, int bx, int cx, int dx){
 
 
-char* bxString= (char*)bx; /* (char*)bx converts the int value of bx into a char*/ 
+//char* bxString= (char*)bx; /* (char*)bx converts the int value of bx into a char*/ 
 
 
 if(ax==0){
  
-	printString(bxString);  
+	printString((char*) bx);  
 	}
 else if(ax==1){
-	readString(bxString);
+	readString((char*) bx);
 	}
 else if(ax==2){
-	readSector(bxString, cx);
+	readSector((char*) bx, cx);
 	}
 else if(ax>=3){
 	printString("Error: ax cannot be greater than 2");
